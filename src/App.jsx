@@ -8,6 +8,7 @@ import FeedbackStats from './components/FeedbackStats';
 import FeedbackForm from './components/FeedbackForm';
 import FeedbackData from './data/FeedbackData';
 import AboutPage from './pages/About';
+import PostPage from './pages/Post';
 import AboutIconLink from './components/AboutIconLink';
 
 const App = () => {
@@ -43,6 +44,7 @@ const App = () => {
 						}
 					></Route>
 					<Route path='/about' element={<AboutPage />} />
+					<Route path='/post/:id/:name' element={<PostPage />} />
 				</Routes>
 
 				<AboutIconLink />
