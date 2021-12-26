@@ -1,5 +1,4 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import PostPage from './pages/Post';
 import AboutPage from './pages/About';
 import Header from './components/Header';
 import FeedbackList from './components/FeedbackList';
@@ -26,7 +25,6 @@ const App = () => {
 							}
 						></Route>
 						<Route path='/about' element={<AboutPage />} />
-						<Route path='/post/*' element={<PostPage />} />
 					</Routes>
 
 					<AboutIconLink />
