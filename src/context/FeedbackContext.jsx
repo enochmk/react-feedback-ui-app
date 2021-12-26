@@ -1,18 +1,28 @@
+import { nanoid } from 'nanoid';
 import { createContext, useState } from 'react';
+import feedbackItems from '../data/FeedbackData';
 
 const FeedbackContext = createContext();
-const items = [
-	{
-		id: 1,
-		text: 'This item is from the context',
-		rating: 10,
-	},
-];
 
 export const FeedbackProvider = ({ children }) => {
-	const [feedback, setFeedback] = useState(items);
+	const [feedback, setFeedback] = useState(feedbackItems);
+
+	const addFeedback = (newFeedback) => {
+		newFeedback.id = nanoid();
+		setFeedback([newFeedback, ...feedback]);
+	};
+
+	const deleteFeedback = (id) => {
+		if (window.confirm('Are you sure you want to delete?')) {
+			setFeedback(feedback.filter((item) => item.id !== id));
+		}
+	};
+
+	// Prodiver
 	const provider = {
 		feedback,
+		addFeedback,
+		deleteFeedback,
 	};
 
 	return (
