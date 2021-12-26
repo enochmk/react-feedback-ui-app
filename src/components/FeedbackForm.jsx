@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import Card from './shared/Card';
 import Button from './Button';
 import RatingSelect from './RatingSelect';
@@ -10,7 +10,16 @@ const FeedbackForm = () => {
 	const [rating, setRating] = useState(10);
 	const [message, setMessage] = useState('');
 
-	const { addFeedback } = useContext(FeedbackContext);
+	const { addFeedback, feedbackEdit, editFeedback, updateFeedback } =
+		useContext(FeedbackContext);
+
+	useEffect(() => {
+		if (feedbackEdit.edit) {
+			setText(feedbackEdit.item.text);
+			setRating(feedbackEdit.item.rating);
+			setBtnDisabled(false);
+		}
+	}, [feedbackEdit]);
 
 	const handleTextChange = (e) => {
 		if (text === '') {
@@ -36,7 +45,10 @@ const FeedbackForm = () => {
 				rating,
 			};
 
-			addFeedback(newFeedback);
+			feedbackEdit.edit
+				? updateFeedback(feedbackEdit.item.id, newFeedback)
+				: addFeedback(newFeedback);
+
 			setText('');
 		}
 	};
@@ -55,7 +67,7 @@ const FeedbackForm = () => {
 						onChange={handleTextChange}
 					/>
 					<Button type='submit' version='primary' isDisabled={btnDisabled}>
-						Send
+						{feedbackEdit.edit ? 'Update' : 'Send'}
 					</Button>
 				</div>
 
