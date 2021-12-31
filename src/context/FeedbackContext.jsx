@@ -1,31 +1,62 @@
-import { nanoid } from 'nanoid';
-import { createContext, useState } from 'react';
-import feedbackItems from '../data/FeedbackData';
+/* eslint-disable no-unused-vars */
+import { createContext, useState, useEffect } from 'react';
 
 const FeedbackContext = createContext();
 
 export const FeedbackProvider = ({ children }) => {
-	const [feedback, setFeedback] = useState(feedbackItems);
+	const [feedback, setFeedback] = useState([]);
+	const [isLoading, setIsLoading] = useState(true);
 	const [feedbackEdit, setFeedbackEdit] = useState({
 		item: {},
 		edit: false,
 	});
 
+	useEffect(() => {
+		fetchFeedback();
+	}, []);
+
+	const fetchFeedback = async () => {
+		const response = await fetch('/feedback?_sort=id&_order=desc');
+		const data = await response.json();
+		setFeedback(data);
+		setIsLoading(false);
+	};
+
 	// Add Feedback
-	const addFeedback = (newFeedback) => {
-		newFeedback.id = nanoid();
-		setFeedback([newFeedback, ...feedback]);
+	const addFeedback = async (newFeedback) => {
+		const response = await fetch('/feedback', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify(newFeedback),
+		});
+
+		const data = await response.json();
+		setFeedback([data, ...feedback]);
 	};
 
 	// Delete Feedback
-	const deleteFeedback = (id) => {
+	const deleteFeedback = async (id) => {
 		if (window.confirm('Are you sure you want to delete?')) {
+			const response = await fetch(`/feedback/${id}`, {
+				method: 'DELETE',
+			});
+
 			setFeedback(feedback.filter((item) => item.id !== id));
 		}
 	};
 
 	// update feedback
-	const updateFeedback = (id, updatedItem) => {
+	const updateFeedback = async (id, updatedItem) => {
+		const response = await fetch(`/feedback/${id}`, {
+			method: 'PUT',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify(updatedItem),
+		});
+
 		setFeedbackEdit({
 			item: {},
 			edit: false,
@@ -50,6 +81,7 @@ export const FeedbackProvider = ({ children }) => {
 	const provider = {
 		feedback,
 		feedbackEdit,
+		isLoading,
 		addFeedback,
 		deleteFeedback,
 		editFeedback,

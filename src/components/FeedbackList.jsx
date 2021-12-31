@@ -1,12 +1,25 @@
 import { useContext } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import Spinner from 'react-bootstrap/Spinner';
 import FeedbackItem from './FeedbackItem';
 import FeedbackContext from '../context/FeedbackContext';
 
 const FeedbackList = () => {
-	const { feedback } = useContext(FeedbackContext);
-	if (!feedback || !feedback.length) {
+	const { feedback, isLoading } = useContext(FeedbackContext);
+	if (!isLoading && (!feedback || !feedback.length)) {
 		return <p>No Feedback Yet</p>;
+	}
+
+	if (isLoading) {
+		return (
+			<Spinner
+				animation='border'
+				role='status'
+				style={{ display: 'block', margin: 'auto' }}
+			>
+				<span className='visually-hidden'>Loading...</span>
+			</Spinner>
+		);
 	}
 
 	return (
